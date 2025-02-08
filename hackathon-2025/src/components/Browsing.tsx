@@ -10,7 +10,6 @@ interface User {
   email: string;
   password: string;
   birthday: string;
-  bio: string;
 }
 
 const Browsing = () => {
@@ -33,22 +32,17 @@ const Browsing = () => {
   function calculateAge(birthday: string): number {
     const birthDate = new Date(birthday); // Convert the birthday string to a Date object
     const today = new Date(); // Get today's date
-    
-    // Calculate age
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
-    
-    // If today's date is before the birthday in this year, subtract 1 from age
+
     if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-  
+
     return age;
   }
 
   return (
-
-
     <div className={styles.browsingContainer}>
       <nav className={styles.navbar}>
         <Link href="/profile">Profile</Link>
@@ -60,7 +54,11 @@ const Browsing = () => {
 
       <div className={styles.profileCard}> 
       <img src="/default-profile.jpg" alt="" className={styles.profilePic} />
-      <h3> {users[0].name}, {calculateAge(users[0].birthday)}</h3>
+      {users.length > 0 ? (
+        <h3>{users[0].name}, {calculateAge(users[0].birthday)} years old</h3>
+      ) : (
+        <p>Loading user data...</p> // Show loading message until data is fetched
+      )}
         <p>🎵 Bio: Music lover & traveler</p>
         <h4>Top 5 Songs:</h4>
         <div className={styles.songList}>
@@ -81,7 +79,11 @@ const Browsing = () => {
 
       <div className={styles.profileCard}> 
       <img src="/default-profile.jpg" alt="" className={styles.profilePic} />
-      <h3>{users[1].name}, {calculateAge(users[1].birthday)}</h3>
+      {users.length > 0 ? (
+        <h3>{users[1].name}, {calculateAge(users[1].birthday)} years old</h3>
+      ) : (
+        <p>Loading user data...</p> // Show loading message until data is fetched
+      )}
         <p>🎵 Bio: Music lover & traveler</p>
         <h4>Top 5 Songs:</h4>
         <div className={styles.songList}>
@@ -103,7 +105,11 @@ const Browsing = () => {
 
       <div className={styles.profileCard}> 
       <img src="/default-profile.jpg" alt="" className={styles.profilePic} />
-      <h3>{users[2].name}, {calculateAge(users[2].birthday)}</h3>
+      {users.length > 0 ? (
+        <h3>{users[2].name}, {calculateAge(users[2].birthday)} years old</h3>
+      ) : (
+        <p>Loading user data...</p> // Show loading message until data is fetched
+      )}
         <p>🎵 Bio: Music lover & traveler</p>
         <h4>Top 5 Songs:</h4>
         <div className={styles.songList}>
@@ -125,7 +131,11 @@ const Browsing = () => {
 
       <div className={styles.profileCard}> 
       <img src="/default-profile.jpg" alt="" className={styles.profilePic} />
-      <h3>{users[4].name}, {calculateAge(users[3].birthday)}</h3>
+      {users.length > 0 ? (
+        <h3>{users[3].name}, {calculateAge(users[3].birthday)} years old</h3>
+      ) : (
+        <p>Loading user data...</p> // Show loading message until data is fetched
+      )}
         <p>🎵 Bio: Music lover & traveler</p>
         <h4>Top 5 Songs:</h4>
         <div className={styles.songList}>
@@ -147,7 +157,11 @@ const Browsing = () => {
 
       <div className={styles.profileCard}> 
       <img src="/default-profile.jpg" alt="" className={styles.profilePic} />
-      <h3>{users[4].name},{calculateAge(users[4].birthday)} </h3>
+      {users.length > 0 ? (
+        <h3>{users[4].name}, {calculateAge(users[4].birthday)} years old</h3>
+      ) : (
+        <p>Loading user data...</p> // Show loading message until data is fetched
+      )}
         <p>🎵 Bio: Music lover & traveler</p>
         <h4>Top 5 Songs:</h4>
         <div className={styles.songList}>

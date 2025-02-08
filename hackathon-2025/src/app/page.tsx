@@ -10,7 +10,7 @@ export default function Home() {
     <div className={styles.container}>
       <h1 className={styles.title}>💘 Music Cupid 💘</h1>
       <button className={styles.signupBtn} onClick={() => router.push("/signup")}>
-        Sign Up
+        Create a Profile!
       </button>
     </div>
   );
