@@ -1,14 +1,18 @@
 import { connectMongoDB } from "@/app/libs/mongodb";
 import User from "@/app/models/User";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 
-// GET first 5 users
-export async function GET() {
+// GET Handler to fetch all users
+export async function GET(req: NextRequest) {
   try {
+    // Connect to the MongoDB database
     await connectMongoDB();
-    const users = await User.find().limit(5).select("-password -confirmPassword");
 
-    if (!users.length) {
+    // Fetch all users (no filtering)
+    const users = await User.find().select("-password -confirmPassword"); // Exclude sensitive fields like password
+
+    if (users.length === 0) {
       return NextResponse.json({ message: "No users found." }, { status: 404 });
     }
 
@@ -18,3 +22,4 @@ export async function GET() {
     return NextResponse.json({ message: "Error retrieving users." }, { status: 500 });
   }
 }
+
