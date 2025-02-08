@@ -1,21 +1,47 @@
+"use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; 
 import styles from "./Signup.module.css";
 
-export default function Signup() {
+const SignUp = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     birthday: "",
   });
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-   // signup logic
-    router.push("/browsing");
+
+    // make sure all fields filled
+    if (!formData.name || !formData.email || !formData.password || !formData.birthday) {
+      setError("All fields are required.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        // clear form and move to next page
+        setFormData({ name: "", email: "", password: "", birthday: "" });
+        router.push("/browsing");
+      } else {
+        setError("Failed to register. Please try again.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
+    }
   };
 
   return (
@@ -28,6 +54,7 @@ export default function Signup() {
           placeholder="Name"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          required
         />
         <input
           type="email"
@@ -35,6 +62,7 @@ export default function Signup() {
           placeholder="Email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          required
         />
         <input
           type="password"
@@ -42,15 +70,17 @@ export default function Signup() {
           placeholder="Password"
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
         />
         <input
           type="date"
           name="birthday"
-          placeholder="Birthday"
           value={formData.birthday}
           onChange={(e) => setFormData({ ...formData, birthday: e.target.value })}
+          required
         />
         <button type="submit" className={styles.signupButton}>Sign Up</button>
+        {error && <div className={styles.errorMessage}>{error}</div>}
       </form>
       <div>
         <span>
@@ -65,4 +95,6 @@ export default function Signup() {
       </div>
     </div>
   );
-}
+};
+
+export default SignUp;

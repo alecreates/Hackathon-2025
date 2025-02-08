@@ -28,7 +28,8 @@
     border-radius: 20px;
     cursor: pointer;
     margin-top: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
+
   }
   
   .signupButton:hover {
@@ -39,6 +40,7 @@
     color: #ff4d6d;
     font-weight: bold;
     cursor: pointer;
+  
   }
   
   .loginLink:hover {
