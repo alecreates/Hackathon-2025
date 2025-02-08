@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 8rem;
+    color: #ff4d6d;
+    font-family: "Pacifico", cursive;
+  }
+  
+  .signupBtn {
+    background-color: #ff4d6d;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .signupBtn:hover {
+    background-color: #ff1e50;
+  }
+  

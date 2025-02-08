@@ -1,0 +1,59 @@
+.browsingContainer {
+    text-align: center;
+    background-color: #fff0f6;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 6rem;
+  }
+  
+  .profilePic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #ff4d6d;
+  }
+  
+  .buttons button {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .buttons button:first-child {
+    background-color: #ff4d6d;
+    color: white;
+  }
+  
+  .buttons button:first-child:hover {
+    background-color: #ff1e50;
+  }
+  
+  .compatibilityScore {
+    font-size: 1.2rem;
+    color: #ff4d6d;
+    font-weight: bold;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background-color: #ff4d6d;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .navbar a {
+    color: #ffebf2;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .navbar a:hover {
+    text-decoration: underline;
+  }
+  
