@@ -19,6 +19,18 @@ const userSchema = new Schema(
       type: Date,
       required: true,
     },
+    bio: {
+      type: String,
+      required: true,
+    },
+    picture: {
+      type: String,
+      required: true,
+    },
+    songs: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true } // Adds createdAt and updatedAt timestamps
 );

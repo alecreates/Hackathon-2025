@@ -14,11 +14,7 @@ const Profile = () => {
       </nav>
       <h2>My Profile</h2>
 
-      <label for="image"> Profile Picture </label>
       <input type="file" id="image" name="image" accept="image/*" className={styles.fileInput} />
-      
-      
-      
       
       <input type="text" placeholder="Type your name here" className={styles.textInput} />
       <input type="text" placeholder="Type your age here" className={styles.textInput} />
