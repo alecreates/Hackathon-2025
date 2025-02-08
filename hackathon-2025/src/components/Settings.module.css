@@ -36,13 +36,17 @@
   }
   
   .navbar {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    background-color: #ff4d6d;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    position: fixed;
+  top: 0;           /* Keeps the navbar at the very top */
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  background-color: #ff4d6d;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
   }
   
   .navbar a {

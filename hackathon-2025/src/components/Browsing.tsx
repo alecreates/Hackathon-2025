@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./Browsing.module.css";
 import { StringExpressionOperatorReturningBoolean } from "mongoose";
 
+
 interface User {
   _id: string;
   name: string;
@@ -23,13 +24,11 @@ interface User {
 
 
 
-
 const Browsing = () => {
   // used determine if compatibility displayed for all 5 users
   const [matched1, setMatched1] = useState(false); 
   const [users, setUsers] = useState<User[]>([]);
   const [userNumber, setUserIndex] = useState<number>(0); // Track which user's data to display
-
   
 
   useEffect(() => {
@@ -54,6 +53,31 @@ const Browsing = () => {
     return age;
   }
 
+  // Save the matched user's index to localStorage
+  const handleMatch = () => {
+    if (users.length > 0) {
+      setMatched1(true)
+      const matchedUser = users[userNumber]; // Get the matched user
+      const existingMatches = JSON.parse(localStorage.getItem("matches") || "[]");
+      // Add the new match to the existing matches array
+      
+      // avoids adding duplicate
+
+      const isAlreadyMatched = existingMatches.some((user: any) => user._id === matchedUser._id);
+
+      if (isAlreadyMatched) {
+        console.log("This user is already in your matches.");
+      return; // Exit early if the user is already matched
+      }
+      
+      existingMatches.push(matchedUser);
+      // Save the updated matches array to localStorage
+      localStorage.setItem("matches", JSON.stringify(existingMatches));
+      console.log("User matched:", matchedUser);
+      
+    }
+  };
+
   const handleNextUser = () => {
     if (users.length > 0) {
       setUserIndex((prevIndex) => (prevIndex + 1) % users.length); // Wrap around to the first user if the last user is reached
@@ -66,9 +90,9 @@ const Browsing = () => {
 
     <div className={styles.browsingContainer}>
       <nav className={styles.navbar}>
-        <Link href="/profile">Profile</Link>
+        <Link href="/profile">View Profile</Link>
         <Link href="/browsing">Browsing</Link>
-        <Link href="/messaging">Messaging</Link>
+        <Link href="/messaging">Your Favorite Matches</Link>
         <Link href="/settings">Settings</Link>
       </nav>
     
@@ -89,7 +113,7 @@ const Browsing = () => {
         <p>Loading user data...</p> // Show loading message until data is fetched
       )}
         
-        <h4>Top 5 Songs:</h4>
+        <strong>Top 5 Songs:</strong>
 
       {users.length > 0 ? (
         <div className={styles.songList}>
@@ -106,7 +130,7 @@ const Browsing = () => {
       )}
         
         <div className={styles.buttons}>
-          <button onClick={() => setMatched1(true)}>Match Me</button>
+          <button onClick={handleMatch}>Match Me</button>
           <button onClick={handleNextUser}>Not Interested</button>
         </div>
         {matched1 && <p className={styles.compatibilityScore}>💖 Music Compatibility: 85%</p>}

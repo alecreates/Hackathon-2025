@@ -21,9 +21,9 @@ const Settings = () => {
   return (
     <div className={styles.settingsContainer}>
         <nav className={styles.navbar}>
-        <Link href="/profile">Profile</Link>
+        <Link href="/profile">View Profile</Link>
         <Link href="/browsing">Browsing</Link>
-        <Link href="/messaging">Messaging</Link>
+        <Link href="/messaging">Your Favorite Matches</Link>
         <Link href="/settings">Settings</Link>
       </nav>
       <h2>Settings</h2>

@@ -64,6 +64,10 @@ transition: 0.3s;
 }
 
 .navbar {
+  position: fixed;
+  top: 0;           /* Keeps the navbar at the very top */
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: center;
   gap: 20px;
