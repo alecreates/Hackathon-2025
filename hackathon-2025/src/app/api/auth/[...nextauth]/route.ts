@@ -10,7 +10,7 @@ const authOptions: any = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },  
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -22,22 +22,21 @@ const authOptions: any = {
 
         try {
           await connectMongoDB(); // connect to database
-          const user = await User.findOne({ email }); 
+          const user = await User.findOne({ email });
 
           if (!user) {
             console.log("User not found");
             return null;
           }
 
-          const passwordsMatch = await bcrypt.compare(password, user.password); // compare passwords
+          const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (!passwordsMatch) {
             console.log("Password mismatch");
             return null;
           }
 
-          // return user object if authentication successful
-          return { id: user._id, name: user.name, email: user.email };
+          return { id: user._id, name: user.name, email: user.email, birthday: user.birthday, bio: user.bio, image: user.image };
 
         } catch (error) {
           console.error("Error during authentication:", error);
@@ -47,26 +46,35 @@ const authOptions: any = {
     }),
   ],
   session: {
-    strategy: "jwt" as SessionStrategy, // use JWT for session management
+    strategy: "jwt" as SessionStrategy,
   },
   callbacks: {
-    // JWT callback to add user information to token
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.birthday = user.birthday;
+        token.bio = user.bio;
+        token.image = user.image;
       }
       return token;
     },
-    // Session callback to include token information in session
     async session({ session, token }) {
       if (token) {
-        session.userId = token.id; // Attach user ID to the token
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.birthday = token.birthday;
+        session.user.bio = token.bio;
+        session.user.image = token.image;
       }
       return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
 
 const handler = NextAuth(authOptions);
 
