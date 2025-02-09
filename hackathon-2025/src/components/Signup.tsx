@@ -73,7 +73,6 @@ const SignUp = () => {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
         />
-        <AutocompleteSearch></AutocompleteSearch>
         
         <input
           type="password"

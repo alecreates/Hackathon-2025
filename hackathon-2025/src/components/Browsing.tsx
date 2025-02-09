@@ -1,9 +1,9 @@
-"use client"; 
+"use client";
 
-import { useState, useEffect } from "react"; 
-import Link from "next/link"; 
-import styles from "./Browsing.module.css"; 
-import { useSession } from "next-auth/react"; 
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import styles from "./Browsing.module.css";
+import { useSession } from "next-auth/react";
 
 interface User {
   _id: string;
@@ -27,7 +27,10 @@ const Browsing = () => {
   const [outOfUsers, setOutOfUsers] = useState(false);
   const [compatibilityScore, setCompatibilityScore] = useState<number | null>(null); // New state for compatibility score
   const [isMatchMode, setIsMatchMode] = useState(false); // State to toggle between "Check Compatibility" and "Match Me" button
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch users from the API on component mount
   useEffect(() => {
     fetch("/api/user")
       .then((res) => res.json())
@@ -57,9 +60,46 @@ const Browsing = () => {
 
   const handleCheckCompatibility = () => {
     if (users.length > 0) {
-      const randomScore = Math.floor(Math.random() * 101); // Random compatibility score for demonstration
-      setCompatibilityScore(randomScore);
-      setIsMatchMode(true); // Show "Match Me" button after compatibility score is displayed
+      const currentUser = users[userNumber];
+      const nextUser = users[(userNumber + 1) % users.length]; // Get the next user (or wrap around)
+
+      setIsLoading(true);
+      setError(null);
+
+      // Make the API call to get the compatibility score
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get_compatibility`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          song1_name: currentUser.song1,
+          song2_name: currentUser.song2,
+          song3_name: currentUser.song3,
+          song4_name: currentUser.song4,
+          song5_name: currentUser.song5,
+          song1_name_next: nextUser.song1,
+          song2_name_next: nextUser.song2,
+          song3_name_next: nextUser.song3,
+          song4_name_next: nextUser.song4,
+          song5_name_next: nextUser.song5,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.compatibility_score) {
+            setCompatibilityScore(data.compatibility_score); // Set compatibility score from API response
+            setIsMatchMode(true); // Show "Match Me" button after compatibility score is displayed
+          } else {
+            setError("Failed to calculate compatibility. Please try again.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching compatibility score:", err);
+          setError(err.message || "Failed to calculate compatibility. Please try again.");
+          setCompatibilityScore(null); // Handle error by setting compatibility score to null
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -138,7 +178,9 @@ const Browsing = () => {
               <p>Loading user data...</p>
             )}
             {users.length > 0 ? (
-              <h3>{users[userNumber].name}, {calculateAge(users[userNumber].birthday)} years old</h3>
+              <h3>
+                {users[userNumber].name}, {calculateAge(users[userNumber].birthday)} years old
+              </h3>
             ) : (
               <p>Loading user data...</p>
             )}
@@ -166,7 +208,9 @@ const Browsing = () => {
 
             <div className={styles.buttons}>
               {!compatibilityScore ? (
-                <button onClick={handleCheckCompatibility}>Check Compatibility</button>
+                <button onClick={handleCheckCompatibility} disabled={isLoading}>
+                  {isLoading ? "Calculating..." : "Check Compatibility"}
+                </button>
               ) : (
                 <>
                   <p className={styles.compatibilityScore}>💖 Music Compatibility: {compatibilityScore}%</p>
@@ -177,7 +221,6 @@ const Browsing = () => {
           </>
         )}
 
-  
         {isMatchMode && compatibilityScore !== null && !outOfUsers && (
           <div className={styles.buttons}>
             <button onClick={handleMatch}>Match Me!</button>
@@ -189,5 +232,3 @@ const Browsing = () => {
 };
 
 export default Browsing;
-
-
