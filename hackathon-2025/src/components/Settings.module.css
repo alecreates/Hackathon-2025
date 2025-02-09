@@ -9,6 +9,7 @@
   
   .logoutButton {
     background-color: #ff4d6d;
+    size: 30px;
     color: white;
     padding: 12px;
     border: none;
