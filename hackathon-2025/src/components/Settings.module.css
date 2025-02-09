@@ -38,7 +38,7 @@
   
   .navbar {
     position: fixed;
-  top: 0;           /* Keeps the navbar at the very top */
+  top: 0;         
   left: 0;
   width: 100%;
   display: flex;

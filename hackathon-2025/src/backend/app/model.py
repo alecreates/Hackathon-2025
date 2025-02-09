@@ -51,11 +51,10 @@ def calculate_content_similarity(song1, song2, all_genres, all_artists, genre_we
 
 # Hybrid model combining content-based and collaborative filtering scores
 def hybrid_model(song1, song2, all_genres, all_artists, content_weight=0.5, collaborative_weight=0.5):
-    content_score = calculate_content_similarity(song1, song2, all_genres, all_artists)
+    content_score = calculate_content_similarity(song1, song2, all_genres, all_artists, genre_weight=0.5, features_weight=0.5)
     
-    # In your current implementation, you're only calculating content score.
-    # You can add collaborative score logic here if needed.
-    collaborative_score = content_score  # For now, just reuse the content score as collaborative score
+    
+    collaborative_score = content_score 
     
     # Combine both scores with weights
     compatibility_score = (content_weight * content_score) + (collaborative_weight * collaborative_score)

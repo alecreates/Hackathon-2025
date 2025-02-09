@@ -1,7 +1,5 @@
 "use client";
 
-import AutocompleteSearch from "./AutocompleteSearch";
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation"; 
 import styles from "./Signup.module.css";

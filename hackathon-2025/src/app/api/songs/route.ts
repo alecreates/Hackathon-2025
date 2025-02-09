@@ -10,11 +10,10 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q") || "";  // Default to empty string if query is not present
 
-    console.log("Query received:", query); // Log the query to ensure it’s coming through correctly
-
-    // Fetch songs where 'track_name' matches the query (case-insensitive regex search)
+    console.log("Query received:", query); 
+    
     const songs = await Song.find(
-      { track_name: { $regex: query, $options: "i" } }, // Search by 'track_name', case-insensitive
+      { track_name: { $regex: query, $options: "i" } }, 
       "track_name" // Only return the 'track_name' field
     ).limit(10); // Limit the number of results to avoid overwhelming the frontend
 

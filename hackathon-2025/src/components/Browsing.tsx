@@ -20,13 +20,13 @@ interface User {
 }
 
 const Browsing = () => {
-  const { data: session } = useSession(); // Hook called inside functional component
+  const { data: session } = useSession();
 
   const [users, setUsers] = useState<User[]>([]);
   const [userNumber, setUserIndex] = useState<number>(0);
   const [outOfUsers, setOutOfUsers] = useState(false);
-  const [compatibilityScore, setCompatibilityScore] = useState<number | null>(null); // New state for compatibility score
-  const [isMatchMode, setIsMatchMode] = useState(false); // State to toggle between "Check Compatibility" and "Match Me" button
+  const [compatibilityScore, setCompatibilityScore] = useState<number | null>(null);
+  const [isMatchMode, setIsMatchMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +39,7 @@ const Browsing = () => {
           const filteredUsers = data.filter((user: User) => user._id !== session.user.id);
           setUsers(filteredUsers);
         } else {
-          setUsers(data); // Fallback if no session
+          setUsers(data);
         }
       })
       .catch((err) => console.error("Error fetching users:", err));
@@ -97,7 +97,7 @@ const Browsing = () => {
         .catch((err) => {
           console.error("Error fetching compatibility score:", err);
           setError(err.message || "Failed to calculate compatibility. Please try again.");
-          setCompatibilityScore(null); // Handle error by setting compatibility score to null
+          setCompatibilityScore(null); 
         })
         .finally(() => setIsLoading(false));
     }
@@ -130,8 +130,9 @@ const Browsing = () => {
         setOutOfUsers(true);
       }
 
-      setCompatibilityScore(null); // Reset compatibility score
-      setIsMatchMode(false); // Hide "Match Me" button
+      // Reset compatibility score and buttons when matching
+      setCompatibilityScore(null);
+      setIsMatchMode(false);
     }
   };
 
