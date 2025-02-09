@@ -9,4 +9,6 @@ Once matches are made, users can access each others' email addresses and contact
 
 Technologies used: React, Next.js, python, flask, sklearn, pymongo, and MongoDB Atlas
 
+Project Log Summary: Our team developed a musical dating app that uses AI to generate compatibility scores based on users’ favorite songs. One of our biggest challenges was settling on an idea, as we had different interests. We resolved this by integrating AI into the dating app, allowing us to explore new technology while maintaining a music theme. Another major hurdle was connecting the front end to the database, as we had limited experience with FlaskAPI. We relied on ChatGPT and YouTube tutorials to guide us through integrating the database with our React framework. Additionally, hosting the database and ensuring proper routing took significant trial and error. Throughout the hackathon, we improved our planning and organization skills, learning that a solid foundation prevents future confusion. We also gained hands-on experience with AI models, FlaskAPI, and full-stack development. Despite the challenges, we successfully completed our project and refined our ability to communicate and present our work effectively.
+
 Contributions: Alexia Toma, Timothy Ly, Sharelle Lord
