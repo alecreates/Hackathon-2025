@@ -1,5 +1,7 @@
 "use client";
 
+import AutocompleteSearch from "./AutocompleteSearch";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation"; 
 import styles from "./Signup.module.css";
@@ -71,6 +73,8 @@ const SignUp = () => {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
         />
+        <AutocompleteSearch></AutocompleteSearch>
+        
         <input
           type="password"
           name="password"
@@ -108,6 +112,7 @@ const SignUp = () => {
           type="text"
           name="song1"
           placeholder="Song 1"
+          
           value={formData.song1}
           onChange={(e) => setFormData({ ...formData, song1: e.target.value })}
           required
