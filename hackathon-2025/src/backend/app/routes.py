@@ -1,18 +1,9 @@
 from flask import Blueprint, request, jsonify
-from app.db import get_song_data
+from app.db import get_song_data_by_name, get_all_genres, get_all_artists
 from app.model import hybrid_model
-from pymongo import MongoClient
-import os
 
 # Create a Blueprint for routes
 main_routes = Blueprint('main_routes', __name__)
-
-# MongoDB connection
-def get_db_connection():
-    MONGODB_URI = os.getenv("MONGODB_URI", "mongodb+srv://sal77130:iWZBEkFgzIiFzLQN@musiccupid.6pcuf.mongodb.net/musiccupid")
-    client = MongoClient(MONGODB_URI)
-    db = client["music_db"]
-    return db
 
 # Route to calculate compatibility score between two songs
 @main_routes.route('/api/get_compatibility', methods=['POST'])
@@ -50,23 +41,3 @@ def get_compatibility():
 
     except Exception as e:
         return jsonify({"error": f"Server error: {str(e)}"}), 500
-
-# Helper function to get song data by track_name
-def get_song_data_by_name(track_name):
-    db = get_db_connection()
-    song = db.songs.find_one({"track_name": track_name})  # Query by track_name
-    return song
-
-# Helper function to fetch all genres from the database
-def get_all_genres():
-    db = get_db_connection()
-    genres = db.songs.distinct("genre")  # Get unique genres from MongoDB
-    all_genres = {genre: index for index, genre in enumerate(genres)}  # Convert to dictionary with index as value
-    return all_genres
-
-# Helper function to fetch all artists from the database
-def get_all_artists():
-    db = get_db_connection()
-    artists = db.songs.distinct("artist_name")  # Get unique artists from MongoDB
-    all_artists = {artist: index for index, artist in enumerate(artists)}  # Convert to dictionary with index as value
-    return all_artists
