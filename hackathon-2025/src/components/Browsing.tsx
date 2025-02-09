@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./Browsing.module.css";
-import { StringExpressionOperatorReturningBoolean } from "mongoose";
 
 
 interface User {
@@ -20,29 +19,37 @@ interface User {
   song5: string;
 }
 
-
-
-
-
 const Browsing = () => {
-  // used determine if compatibility displayed for all 5 users
-  const [matched1, setMatched1] = useState(false); 
+  const [matched1, setMatched1] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
-  const [userNumber, setUserIndex] = useState<number>(0); // Track which user's data to display
-  
+  const [userNumber, setUserIndex] = useState<number>(0);
+  const [compatibilityScore, setCompatibilityScore] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch users from the API on component mount
   useEffect(() => {
-    fetch("/api/user") // Calls the GET method for first 5 users
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch((err) => console.error("Error fetching users:", err));
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+        const data = await response.json();
+        setUsers(data);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+        setError("Failed to load users. Please try again later.");
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-  
-
+  // Function to calculate user's age based on birthday
   function calculateAge(birthday: string): number {
-    const birthDate = new Date(birthday); // Convert the birthday string to a Date object
-    const today = new Date(); // Get today's date
+    const birthDate = new Date(birthday);
+    const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
 
@@ -53,41 +60,65 @@ const Browsing = () => {
     return age;
   }
 
-  // Save the matched user's index to localStorage
-  const handleMatch = () => {
-    if (users.length > 0) {
-      setMatched1(true)
-      const matchedUser = users[userNumber]; // Get the matched user
-      const existingMatches = JSON.parse(localStorage.getItem("matches") || "[]");
-      // Add the new match to the existing matches array
-      
-      // avoids adding duplicate
-
-      const isAlreadyMatched = existingMatches.some((user: any) => user._id === matchedUser._id);
-
-      if (isAlreadyMatched) {
-        console.log("This user is already in your matches.");
-      return; // Exit early if the user is already matched
-      }
-      
-      existingMatches.push(matchedUser);
-      // Save the updated matches array to localStorage
-      localStorage.setItem("matches", JSON.stringify(existingMatches));
-      console.log("User matched:", matchedUser);
-      
-    }
-  };
-
+  // Handle moving to the next user
   const handleNextUser = () => {
     if (users.length > 0) {
-      setUserIndex((prevIndex) => (prevIndex + 1) % users.length); // Wrap around to the first user if the last user is reached
-      setMatched1(false)
+      setUserIndex((prevIndex) => (prevIndex + 1) % users.length);
+      setMatched1(false);
+      setCompatibilityScore(null);
     }
   };
-  
+
+  // Handle "Match Me" button click
+  const handleMatch = async () => {
+    if (users.length < 2) {
+      setError("Not enough users to match.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    const currentUser = users[userNumber];
+    const nextUser = users[(userNumber + 1) % users.length];
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get_compatibility`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          song1_name: currentUser.song1,
+          song2_name: currentUser.song2,
+          song3_name: currentUser.song3,
+          song4_name: currentUser.song4,
+          song5_name: currentUser.song5,
+          song1_name_next: nextUser.song1,
+          song2_name_next: nextUser.song2,
+          song3_name_next: nextUser.song3,
+          song4_name_next: nextUser.song4,
+          song5_name_next: nextUser.song5,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to calculate compatibility");
+      }
+
+      const data = await response.json();
+      setCompatibilityScore(data.compatibility_score);
+      setMatched1(true);
+    } catch (err) {
+      console.error("Error calculating compatibility:", err);
+      setError(err.message || "Failed to calculate compatibility. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-
     <div className={styles.browsingContainer}>
       <nav className={styles.navbar}>
         <Link href="/profile">View Profile</Link>
@@ -95,51 +126,46 @@ const Browsing = () => {
         <Link href="/messaging">Your Favorite Matches</Link>
         <Link href="/settings">Settings</Link>
       </nav>
-    
-      <div className={styles.profileCard}> 
-      {users.length > 0 ? (
-        <img src={users[userNumber].image} alt="" className={styles.profilePic} />
-      ) : (
-        <p>Loading user data...</p> // Show loading message until data is fetched
-      )}
-      {users.length > 0 ? (
-        <h3>{users[userNumber].name}, {calculateAge(users[userNumber].birthday)} years old</h3>
-      ) : (
-        <p>Loading user data...</p> // Show loading message until data is fetched
-      )}
-      {users.length > 0 ? (
-        <p>🎵 Bio: {users[userNumber].bio}</p>
-      ) : (
-        <p>Loading user data...</p> // Show loading message until data is fetched
-      )}
-        
-        <strong>Top 5 Songs:</strong>
 
-      {users.length > 0 ? (
-        <div className={styles.songList}>
-          <ul>
-            <li className={styles.song}>{users[userNumber].song1}</li>
-            <li className={styles.song}>{users[userNumber].song2}</li>
-            <li className={styles.song}>{users[userNumber].song3}</li>
-            <li className={styles.song}>{users[userNumber].song4}</li>
-            <li className={styles.song}>{users[userNumber].song5}</li>
-          </ul>
-        </div>
-      ) : (
-        <p>Loading user data...</p> // Show loading message until data is fetched
-      )}
-        
+      <div className={styles.profileCard}>
+        {error && <p className={styles.error}>{error}</p>}
+        {users.length > 0 ? (
+          <>
+            <img src={users[userNumber].image} alt="" className={styles.profilePic} />
+            <h3>
+              {users[userNumber].name}, {calculateAge(users[userNumber].birthday)} years old
+            </h3>
+            <p>🎵 Bio: {users[userNumber].bio}</p>
+            <h4>Top 5 Songs:</h4>
+            <div className={styles.songList}>
+              <ul>
+                <li className={styles.song}>{users[userNumber].song1}</li>
+                <li className={styles.song}>{users[userNumber].song2}</li>
+                <li className={styles.song}>{users[userNumber].song3}</li>
+                <li className={styles.song}>{users[userNumber].song4}</li>
+                <li className={styles.song}>{users[userNumber].song5}</li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <p>Loading user data...</p>
+        )}
+
         <div className={styles.buttons}>
-          <button onClick={handleMatch}>Match Me</button>
+          <button onClick={handleMatch} disabled={isLoading}>
+            {isLoading ? "Calculating..." : "Match Me"}
+          </button>
           <button onClick={handleNextUser}>Not Interested</button>
         </div>
-        {matched1 && <p className={styles.compatibilityScore}>💖 Music Compatibility: 85%</p>}
+
+        {matched1 && compatibilityScore !== null && (
+          <p className={styles.compatibilityScore}>
+            💖 Music Compatibility: {compatibilityScore}%
+          </p>
+        )}
       </div>
-
     </div>
-
   );
 };
-
 
 export default Browsing;
